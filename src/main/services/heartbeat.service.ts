@@ -7,6 +7,10 @@ import { Instance } from "../schema/instance.model";
 import { UnregistrationRequest } from "../schema/unregistrationRequest.dto";
 import { UnregistrationResponse } from "../schema/unregistrationResponse.dto";
 import { ApplicationNotFoundError } from "./applicationNotFound.error";
+import {
+  createGroupResponse,
+  GroupResponse,
+} from "../schema/groupResponse.dto";
 
 @injectable()
 export class HeartbeatService {
@@ -46,23 +50,48 @@ export class HeartbeatService {
   ): Promise<UnregistrationResponse> {
     const { id, group } = req;
     this.logger.info(`unregistering application`, { id, group });
-    const existingApp = await this.appInstanceRepo.get(id, group);
-    if (existingApp === null) {
+    const unregistered = await this.appInstanceRepo.delete(id, group);
+    if (unregistered === null) {
       this.logger.info(`application to unregister not found`, { id, group });
       throw new ApplicationNotFoundError(id, group);
     }
-    const unregistered = await this.appInstanceRepo.delete(id, group);
     this.logger.info(`unregistered instance`, unregistered);
     return unregistered;
   }
 
-  // public async getAll() {
-  //     this.logger.info(`Getting all applications`);
-  //     // return all applications
-  // }
-
-  // public async getGroup(group: string) {
-  //     this.logger.info(`Getting applications in group ${group}`);
-  //     // return applications in group
-  // }
+  public async getAllGroups(): Promise<GroupResponse[]> {
+    this.logger.info(`getting groups summary`);
+    const instances = await this.appInstanceRepo.getAll();
+    const response = instances.reduce((groups, instance) => {
+      const group = instance.group;
+      const currentGroup = getElementOrCreate(groups, group, () =>
+        createGroupResponse(group, 0, instance.createdAt, instance.updatedAt)
+      );
+      const updatedGroup = addInstanceToGroupResponse(currentGroup, instance);
+      return { ...groups, [group]: updatedGroup };
+    }, {} as { [key: string]: GroupResponse });
+    this.logger.info(`got groups summary`, response);
+    return Object.values(response);
+  }
 }
+
+const getElementOrCreate = <T>(
+  dict: { [key: string]: T },
+  key: string,
+  newElementConstructor: () => T
+): T => {
+  if (dict[key] !== undefined) {
+    return dict[key];
+  }
+  return newElementConstructor();
+};
+
+const addInstanceToGroupResponse = (
+  group: GroupResponse,
+  instance: Instance
+): GroupResponse => {
+  group.instances++;
+  group.createdAt = Math.min(group.createdAt, instance.createdAt);
+  group.lastUpdatedAt = Math.max(group.lastUpdatedAt, instance.updatedAt);
+  return group;
+};
