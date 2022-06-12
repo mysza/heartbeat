@@ -1,47 +1,52 @@
 import { Schema } from "@ubio/framework";
+import { JsonSchema } from "@ubio/framework/out/main/schema-types";
 
-export type InstanceBase = {
-    id: string;
-    group: string;
-    meta?: Record<string, unknown>;
+export interface Meta {
+  [key: string]: unknown;
 }
 
-export type InstanceTemporal = {
-    createdAt: number;
-    updatedAt: number;
+export interface Instance {
+  id: string;
+  group: string;
+  createdAt: number;
+  updatedAt: number;
+  meta: Meta;
 }
 
-export type Instance = InstanceBase & InstanceTemporal;
+export const ApplicationIdJsonSchema: JsonSchema<string> = {
+  type: "string",
+  minLength: 1,
+};
+
+export const GroupIdJsonSchema: JsonSchema<string> = {
+  type: "string",
+  minLength: 1,
+};
+
+export const TimestampJsonSchema: JsonSchema<number> = {
+  type: "number",
+};
+
+export const MetaJsonSchema: JsonSchema<Meta> = {
+  type: "object",
+  properties: {},
+  additionalProperties: true,
+};
 
 export const Instance = new Schema<Instance>({
-    schema: {
-        type: "object",
-        properties: {
-            id: {
-                type: "string",
-                minLength: 1,
-            },
-            group: {
-                type: "string",
-                minLength: 1,
-            },
-            createdAt: {
-                type: "number",
-            },
-            updatedAt: {
-                type: "number",
-            },
-            meta: {
-                type: "object",
-                properties: {},
-                additionalProperties: true,
-                optional: true,
-            }
-        },
-        required: ["id", "group", "createdAt", "updatedAt"],
+  schema: {
+    type: "object",
+    properties: {
+      id: ApplicationIdJsonSchema,
+      group: GroupIdJsonSchema,
+      createdAt: TimestampJsonSchema,
+      updatedAt: TimestampJsonSchema,
+      meta: MetaJsonSchema,
     },
-    defaults: {
-        createdAt: Date.now(),
-        updatedAt: Date.now(),
-    }
+    required: ["id", "group", "createdAt", "updatedAt"],
+  },
+  defaults: {
+    createdAt: Date.now(),
+    updatedAt: Date.now(),
+  },
 });

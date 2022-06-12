@@ -1,34 +1,28 @@
 import { Schema } from "@ubio/framework";
-import { Instance } from "./instance.model";
+import {
+  ApplicationIdJsonSchema,
+  GroupIdJsonSchema,
+  Meta,
+  MetaJsonSchema,
+} from "./instance.model";
 
 export interface RegistrationRequest {
-    id: string;
-    group: string;
-    meta?: Record<string, unknown>;
-};
+  id: string;
+  group: string;
+  meta: Meta;
+}
 
 export const RegistrationRequest = new Schema<RegistrationRequest>({
-    schema: {
-        type: "object",
-        properties: {
-            id: {
-                type: "string",
-                minLength: 1,
-            },
-            group: {
-                type: "string",
-                minLength: 1,
-            },
-            meta: {
-                type: "object",
-                properties: {},
-                additionalProperties: true,
-                optional: true,
-            }
-        },
-        required: ["id", "group"],
+  schema: {
+    type: "object",
+    properties: {
+      id: ApplicationIdJsonSchema,
+      group: GroupIdJsonSchema,
+      meta: MetaJsonSchema,
     },
-    defaults: {
-        meta: {},
-    }
+    required: ["id", "group"],
+  },
+  defaults: {
+    meta: {},
+  },
 });

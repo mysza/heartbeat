@@ -1,8 +1,8 @@
 import { ConsoleLogger } from "@ubio/framework";
-import { Instance } from "../../main/schema/instance.model";
-import { RegistrationRequest } from "../../main/schema/registrationRequest.dto";
-import { ApplicationInstanceRepository } from "../../main/services/appinstance.repository";
-import { HeartbeatService } from "../../main/services/heartbeat.service";
+import { Instance } from "../../../main/schema/instance.model";
+import { RegistrationRequest } from "../../../main/schema/registrationRequest.dto";
+import { ApplicationInstanceRepository } from "../../../main/services/appinstance.repository";
+import { HeartbeatService } from "../../../main/services/heartbeat.service";
 
 describe('heartbeat.service', () => {
     describe('register', () => {
