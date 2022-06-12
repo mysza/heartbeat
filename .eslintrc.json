@@ -1,3 +1,3 @@
 {
-  "extends": ["@ubio/eslint-config"]
+  "extends": ["@ubio/eslint-config", "prettier/prettier"]
 }
