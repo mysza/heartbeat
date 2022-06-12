@@ -1,0 +1,18 @@
+{
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "setupFiles": ["dotenv/config"],
+  "collectCoverage": false,
+  "collectCoverageFrom": ["src/**/*.ts"],
+  "testMatch": ["**/test/**/*.spec.ts"],
+  "testPathIgnorePatterns": ["/node_modules/", "/out/"],
+  "coveragePathIgnorePatterns": [],
+  "moduleFileExtensions": ["ts", "js", "json"],
+  "clearMocks": true,
+  "globals": {
+    "ts-jest": {
+      "tsconfig": "tsconfig.json",
+      "diagnostics": true
+    }
+  }
+}
