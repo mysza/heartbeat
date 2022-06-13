@@ -40,19 +40,21 @@ The project is built using the [Ubio Node Framework](https://github.com/ubio/nod
 
 The project is structured as follows:
 
+```txt
 -- node_modules
 -- out
 -- src
     |-- bin
     |-- main
-        |-- http        # routes and request and response schemas (HTTP layer only)
-        |-- repos       # repositories - in this case only one, for app instances
-        |-- schema      # schemas - the most core application models
-        |-- services    # the application services implementation (business logic)
-            |-- dto     # DTO definitions for service requests and responses
+    |   |-- http        # routes and request and response schemas (HTTP layer only)
+    |   |-- repos       # repositories - in this case only one, for app instances
+    |   |-- schema      # schemas - the most core application models
+    |   |-- services    # the application services implementation (business logic)
+    |       |-- dto     # DTO definitions for service requests and responses
     |-- test
         |-- e2e         # end-to-end tests with setup/teardown
         |-- unit        # unit tests
+```
 
 All the top level files are the usual project configuration, docker, gitignore, prettier etc. files.
 
