@@ -1,15 +1,11 @@
 FROM node:18.3.0-slim
 
-EXPOSE 8080
+ENV PORT 8080
+ENV MONGO_URL mongodb://localhost:27017/ubio-heartbeat
+
+EXPOSE ${PORT}
 
 WORKDIR /home/node
-
-# RUN apt-get update && \
-#   apt-get dist-upgrade --yes && \
-#   apt-get install --yes wget && \
-#   apt-get install --yes python && \
-#   apt-get install --yes build-essential && \
-#   apt-get autoremove --yes
 
 USER node
 

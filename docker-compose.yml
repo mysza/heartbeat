@@ -1,0 +1,17 @@
+version: '3.6'
+services:
+  heartbeat:
+    build: .
+    container_name: heartbeat
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      - MONGO_URL=mongodb://mongo:27017/heartbeat
+      - PORT=8080
+  mongo:
+    image: mongo
+    container_name: mongo
+    ports:
+      - "27017:27017"
