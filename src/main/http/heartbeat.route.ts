@@ -70,14 +70,11 @@ export class HeartbeatRouter extends Router {
   @Delete({
     path: "/groups/{group}/apps/{id}",
     responses: {
-      200: {
+      204: {
         description: "Application unregistered",
-        contentType: "application/json",
-        schema: InstanceResponseSchema,
       },
       404: {
         description: "Application not found",
-        contentType: "application/json",
       },
       500: {
         description: "Internal server error",
@@ -90,10 +87,14 @@ export class HeartbeatRouter extends Router {
     group: string,
     @PathParam("id", { schema: ApplicationIdJsonSchema })
     id: string
-  ): Promise<InstanceResponse> {
+  ): Promise<void> {
     this.logger.addContextData({ group, id });
     const unregistrationRequest = new UnregistrationRequest(id, group);
-    return this.heartbeatService.unregister(unregistrationRequest);
+    const unregistered = await this.heartbeatService.unregister(
+      unregistrationRequest
+    );
+    this.ctx.status = unregistered ? 204 : 404;
+    return;
   }
 
   @Get({
@@ -124,7 +125,6 @@ export class HeartbeatRouter extends Router {
       },
       404: {
         description: "Group not found",
-        contentType: "application/json",
       },
       500: {
         description: "Internal server error",
@@ -136,6 +136,11 @@ export class HeartbeatRouter extends Router {
     @PathParam("group", { schema: GroupIdJsonSchema })
     group: string
   ) {
-    return this.heartbeatService.getAllInstances(group);
+    const groupInstances = await this.heartbeatService.getAllInstances(group);
+    if (!groupInstances) {
+      this.ctx.status = 404;
+      return null;
+    }
+    return groupInstances;
   }
 }

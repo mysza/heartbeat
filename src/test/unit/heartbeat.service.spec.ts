@@ -3,10 +3,8 @@ import { Instance } from "../../main/schema/models/instance.model";
 import { RegistrationRequest } from "../../main/schema/dto/registrationRequest.dto";
 import { UnregistrationRequest } from "../../main/schema/dto/unregistrationRequest.dto";
 import { ApplicationInstanceRepository } from "../../main/services/appinstance.repository";
-import { ApplicationNotFoundError } from "../../main/services/applicationNotFound.error";
 import { HeartbeatService } from "../../main/services/heartbeat.service";
 import { GroupSummary } from "../../main/schema/models/groupSummary.model";
-import { Group } from "../../main/repos/appinstance.memory.repo";
 
 const baseMockRepo: ApplicationInstanceRepository = {
   getInstance: jest.fn(),
@@ -119,11 +117,12 @@ describe("heartbeat.service", () => {
       expect(repoMock.deleteInstance).toHaveBeenCalledTimes(1);
 
       // not testing id and group as this logic is in the mock repo
-      expect(unregistered.id).toEqual(existingApp.id);
-      expect(unregistered.group).toEqual(existingApp.group);
+      expect(unregistered).not.toBeNull();
+      expect(unregistered?.id).toEqual(existingApp.id);
+      expect(unregistered?.group).toEqual(existingApp.group);
     });
 
-    it("should throw if non-existing application", async () => {
+    it("should return null if non-existing application", async () => {
       const repoMock: ApplicationInstanceRepository = Object.assign(
         {},
         baseMockRepo,
@@ -133,10 +132,10 @@ describe("heartbeat.service", () => {
       const req = new UnregistrationRequest("test-app-id", "test-group-id");
       const service = new HeartbeatService(new ConsoleLogger(), repoMock);
 
-      await expect(service.unregister(req)).rejects.toThrow(
-        ApplicationNotFoundError
-      );
+      const unregistered = await service.unregister(req);
+
       expect(repoMock.deleteInstance).toHaveBeenCalledTimes(1);
+      expect(unregistered).toBeNull();
     });
   });
 
@@ -175,22 +174,24 @@ describe("heartbeat.service", () => {
     });
 
     it("should get all group instances for existing group", async () => {
-      const group = new Group("test-group-id-1");
-      group.addOrUpdateInstance(
-        new Instance("test-app-id-1", "test-group-id-1", { test: "test" })
-      );
-      group.addOrUpdateInstance(
-        new Instance("test-app-id-2", "test-group-id-1", { test: "test" })
-      );
+      const groupName = "test-group-id-1";
       const repoMock: ApplicationInstanceRepository = Object.assign(
         {},
         baseMockRepo,
         {
-          getAllInstances: jest.fn().mockResolvedValue(group.instances),
+          getAllInstances: jest
+            .fn()
+            .mockResolvedValue([
+              new Instance("test-app-id-1", groupName),
+              new Instance("test-app-id-2", groupName),
+              new Instance("test-app-id-3", groupName),
+              new Instance("test-app-id-4", groupName),
+            ]),
         }
       );
       const service = new HeartbeatService(new ConsoleLogger(), repoMock);
-      const response = await service.getAllInstances(group.name);
+
+      const response = await service.getAllInstances(groupName);
 
       expect(repoMock.getAllInstances).toHaveBeenCalledTimes(1);
       expect(response).toEqual(
@@ -201,6 +202,14 @@ describe("heartbeat.service", () => {
           }),
           expect.objectContaining({
             id: "test-app-id-2",
+            group: "test-group-id-1",
+          }),
+          expect.objectContaining({
+            id: "test-app-id-3",
+            group: "test-group-id-1",
+          }),
+          expect.objectContaining({
+            id: "test-app-id-4",
             group: "test-group-id-1",
           }),
         ])

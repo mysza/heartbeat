@@ -19,5 +19,5 @@ export abstract class ApplicationInstanceRepository {
     id: string
   ): Promise<Instance | null>;
   public abstract getAllGroups(): Promise<GroupSummary[]>;
-  public abstract getAllInstances(group: string): Promise<Instance[]>;
+  public abstract getAllInstances(group: string): Promise<Instance[] | null>;
 }

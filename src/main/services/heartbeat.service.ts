@@ -4,7 +4,6 @@ import { ApplicationInstanceRepository } from "./appinstance.repository";
 import { RegistrationRequest } from "../schema/dto/registrationRequest.dto";
 import { Instance } from "../schema/models/instance.model";
 import { UnregistrationRequest } from "../schema/dto/unregistrationRequest.dto";
-import { ApplicationNotFoundError } from "./applicationNotFound.error";
 import {
   createGroupResponse,
   GroupResponse,
@@ -30,7 +29,7 @@ export class HeartbeatService {
     });
     const { applicationId, groupId, meta } = req;
     const instance =
-      (await this.appInstanceRepo.getInstance(applicationId, groupId)) ??
+      (await this.appInstanceRepo.getInstance(groupId, applicationId)) ??
       new Instance(applicationId, groupId, meta);
     const added = await this.appInstanceRepo.saveInstance(
       instance.update(meta)
@@ -40,7 +39,7 @@ export class HeartbeatService {
 
   public async unregister(
     req: UnregistrationRequest
-  ): Promise<InstanceResponse> {
+  ): Promise<InstanceResponse | null> {
     const { applicationId, groupId } = req;
     this.logger.info(`unregistering application`, {
       id: applicationId,
@@ -50,15 +49,7 @@ export class HeartbeatService {
       groupId,
       applicationId
     );
-    if (unregistered === null) {
-      this.logger.info(`application to unregister not found`, {
-        id: applicationId,
-        group: groupId,
-      });
-      throw new ApplicationNotFoundError(applicationId, groupId);
-    }
-    this.logger.info(`unregistered instance`, unregistered);
-    return createInstanceResponse(unregistered);
+    return unregistered ? createInstanceResponse(unregistered) : null;
   }
 
   public async getAllGroups(): Promise<GroupResponse[]> {
@@ -67,9 +58,14 @@ export class HeartbeatService {
     return groupSummaries.map((group) => createGroupResponse(group));
   }
 
-  public async getAllInstances(group: string): Promise<InstanceResponse[]> {
+  public async getAllInstances(
+    group: string
+  ): Promise<InstanceResponse[] | null> {
     this.logger.info(`getting all instances`);
     const groupInstances = await this.appInstanceRepo.getAllInstances(group);
-    return groupInstances.map((instance) => createInstanceResponse(instance));
+    if (groupInstances !== null) {
+      return groupInstances.map((instance) => createInstanceResponse(instance));
+    }
+    return null;
   }
 }

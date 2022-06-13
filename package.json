@@ -21,10 +21,12 @@
   "license": "UNLICENSED",
   "dependencies": {
     "@types/koa": "^2.13.4",
+    "@types/mongodb": "^4.0.7",
     "@ubio/framework": "^13.10.0",
     "dotenv": "^16.0.1",
     "inversify": "^6.0.1",
-    "koa": "^2.13.4"
+    "koa": "^2.13.4",
+    "mongodb": "^4.7.0"
   },
   "devDependencies": {
     "@types/jest": "^28.1.1",
