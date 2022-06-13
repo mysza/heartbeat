@@ -7,7 +7,6 @@ import {
   Delete,
 } from "@ubio/framework";
 import { injectable, inject } from "inversify";
-import { createGroupResponse } from "../services/dto/groupResponse.dto";
 import { InstanceResponse } from "../services/dto/instanceResponse.dto";
 import { RegistrationRequest } from "../services/dto/registrationRequest.dto";
 import { UnregistrationRequest } from "../services/dto/unregistrationRequest.dto";

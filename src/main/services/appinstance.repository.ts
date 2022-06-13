@@ -1,5 +1,4 @@
-import { Logger } from "@ubio/framework";
-import { inject, injectable } from "inversify";
+import { injectable } from "inversify";
 import { GroupSummary } from "../schema/groupSummary.model";
 import { Instance } from "../schema/instance.model";
 

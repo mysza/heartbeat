@@ -1,6 +1,3 @@
-import { Schema } from "@ubio/framework";
-import { JsonSchema } from "@ubio/framework/out/main/schema-types";
-
 export type InstanceMeta = {
   [key: string]: unknown;
 };

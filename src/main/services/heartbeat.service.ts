@@ -1,8 +1,8 @@
 import { inject, injectable } from "inversify";
 import { Logger } from "@ubio/framework";
+import { Instance } from "../schema/instance.model";
 import { ApplicationInstanceRepository } from "./appinstance.repository";
 import { RegistrationRequest } from "./dto/registrationRequest.dto";
-import { Instance } from "../schema/instance.model";
 import { UnregistrationRequest } from "./dto/unregistrationRequest.dto";
 import { createGroupResponse, GroupResponse } from "./dto/groupResponse.dto";
 import {

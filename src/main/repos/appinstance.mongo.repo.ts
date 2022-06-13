@@ -75,6 +75,9 @@ export class MongoApplicationInstanceRepository extends ApplicationInstanceRepos
   }
 
   public async getAllGroups(): Promise<GroupSummary[]> {
+    // 1. group by group name, sum instances and build createdAt and lastUpdatedAt
+    //    based on the instances values
+    // 2. project the result to the final shape
     const aggregate = [
       {
         $group: {
