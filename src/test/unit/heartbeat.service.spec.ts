@@ -1,10 +1,10 @@
 import { ConsoleLogger } from "@ubio/framework";
-import { Instance } from "../../main/schema/models/instance.model";
-import { RegistrationRequest } from "../../main/schema/dto/registrationRequest.dto";
-import { UnregistrationRequest } from "../../main/schema/dto/unregistrationRequest.dto";
+import { Instance } from "../../main/schema/instance.model";
+import { RegistrationRequest } from "../../main/services/dto/registrationRequest.dto";
+import { UnregistrationRequest } from "../../main/services/dto/unregistrationRequest.dto";
 import { ApplicationInstanceRepository } from "../../main/services/appinstance.repository";
 import { HeartbeatService } from "../../main/services/heartbeat.service";
-import { GroupSummary } from "../../main/schema/models/groupSummary.model";
+import { GroupSummary } from "../../main/schema/groupSummary.model";
 
 const baseMockRepo: ApplicationInstanceRepository = {
   getInstance: jest.fn(),

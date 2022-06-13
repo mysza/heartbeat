@@ -1,17 +1,14 @@
 import { inject, injectable } from "inversify";
 import { Logger } from "@ubio/framework";
 import { ApplicationInstanceRepository } from "./appinstance.repository";
-import { RegistrationRequest } from "../schema/dto/registrationRequest.dto";
-import { Instance } from "../schema/models/instance.model";
-import { UnregistrationRequest } from "../schema/dto/unregistrationRequest.dto";
-import {
-  createGroupResponse,
-  GroupResponse,
-} from "../schema/dto/groupResponse.dto";
+import { RegistrationRequest } from "./dto/registrationRequest.dto";
+import { Instance } from "../schema/instance.model";
+import { UnregistrationRequest } from "./dto/unregistrationRequest.dto";
+import { createGroupResponse, GroupResponse } from "./dto/groupResponse.dto";
 import {
   createInstanceResponse,
   InstanceResponse,
-} from "../schema/dto/instanceResponse.dto";
+} from "./dto/instanceResponse.dto";
 
 @injectable()
 export class HeartbeatService {

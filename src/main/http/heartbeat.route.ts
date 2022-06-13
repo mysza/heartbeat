@@ -7,11 +7,11 @@ import {
   Delete,
 } from "@ubio/framework";
 import { injectable, inject } from "inversify";
-import { createGroupResponse } from "../schema/dto/groupResponse.dto";
-import { InstanceResponse } from "../schema/dto/instanceResponse.dto";
-import { RegistrationRequest } from "../schema/dto/registrationRequest.dto";
-import { UnregistrationRequest } from "../schema/dto/unregistrationRequest.dto";
-import { InstanceMeta } from "../schema/models/instance.model";
+import { createGroupResponse } from "../services/dto/groupResponse.dto";
+import { InstanceResponse } from "../services/dto/instanceResponse.dto";
+import { RegistrationRequest } from "../services/dto/registrationRequest.dto";
+import { UnregistrationRequest } from "../services/dto/unregistrationRequest.dto";
+import { InstanceMeta } from "../schema/instance.model";
 import { HeartbeatService } from "../services/heartbeat.service";
 import { GroupsSummaryResponseSchema } from "./groupSummaryResponse.schema";
 import {

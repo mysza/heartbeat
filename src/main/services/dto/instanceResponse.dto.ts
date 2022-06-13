@@ -1,4 +1,4 @@
-import { Instance } from "../models/instance.model";
+import { Instance } from "../../schema/instance.model";
 
 export const createInstanceResponse = (instance: Instance) => ({
   id: instance.id,

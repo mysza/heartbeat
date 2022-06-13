@@ -1,5 +1,5 @@
 import { JsonSchema } from "@ubio/framework/out/main/schema-types";
-import { InstanceMeta } from "../schema/models/instance.model";
+import { InstanceMeta } from "../schema/instance.model";
 
 export const ApplicationIdJsonSchema: JsonSchema<string> = {
   type: "string",

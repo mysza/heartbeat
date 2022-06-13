@@ -1,4 +1,4 @@
-import { GroupSummary } from "../models/groupSummary.model";
+import { GroupSummary } from "../../schema/groupSummary.model";
 
 export const createGroupResponse = (group: GroupSummary) => ({
   group: group.group,

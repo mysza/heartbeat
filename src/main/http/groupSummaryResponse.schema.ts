@@ -1,5 +1,5 @@
 import { Schema } from "@ubio/framework";
-import { GroupResponse } from "../schema/dto/groupResponse.dto";
+import { GroupResponse } from "../services/dto/groupResponse.dto";
 
 export const GroupsSummaryResponseSchema = new Schema<GroupResponse[]>({
   schema: {

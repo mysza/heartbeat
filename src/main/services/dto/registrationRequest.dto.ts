@@ -1,4 +1,4 @@
-import { InstanceMeta } from "../models/instance.model";
+import { InstanceMeta } from "../../schema/instance.model";
 
 export class RegistrationRequest {
   constructor(

@@ -1,5 +1,5 @@
 import { Schema } from "@ubio/framework";
-import { InstanceResponse } from "../schema/dto/instanceResponse.dto";
+import { InstanceResponse } from "../services/dto/instanceResponse.dto";
 
 export const InstanceResponseSchema = new Schema<InstanceResponse>({
   schema: {

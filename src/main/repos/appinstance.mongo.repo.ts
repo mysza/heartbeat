@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
-import { GroupSummary } from "../schema/models/groupSummary.model";
-import { Instance } from "../schema/models/instance.model";
+import { GroupSummary } from "../schema/groupSummary.model";
+import { Instance } from "../schema/instance.model";
 import { ApplicationInstanceRepository } from "../services/appinstance.repository";
 import { MongoDb } from "@ubio/framework/out/modules/mongodb";
 import { Collection, WithId } from "mongodb";

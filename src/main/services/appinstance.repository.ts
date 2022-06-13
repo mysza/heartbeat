@@ -1,7 +1,7 @@
 import { Logger } from "@ubio/framework";
 import { inject, injectable } from "inversify";
-import { GroupSummary } from "../schema/models/groupSummary.model";
-import { Instance } from "../schema/models/instance.model";
+import { GroupSummary } from "../schema/groupSummary.model";
+import { Instance } from "../schema/instance.model";
 
 /**
  * Defining the ApplicationRepository interface here, to keep the definition
