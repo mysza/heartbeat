@@ -1,0 +1,19 @@
+{
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "collectCoverage": false,
+  "collectCoverageFrom": ["src/**/*.ts"],
+  "testMatch": ["**/test/e2e/*.spec.ts"],
+  "testPathIgnorePatterns": ["/node_modules/", "/out/"],
+  "coveragePathIgnorePatterns": [],
+  "moduleFileExtensions": ["ts", "js", "json"],
+  "clearMocks": true,
+  "globalSetup": "./src/test/e2e/setup.ts",
+  "globalTeardown": "./src/test/e2e/teardown.ts",
+  "globals": {
+    "ts-jest": {
+      "tsconfig": "./tsconfig.json",
+      "diagnostics": true
+    }
+  }
+}

@@ -1,0 +1,6 @@
+version: '3.6'
+services:
+  heartbeat:
+    build: ../../../.
+    ports:
+      - "8080:8080"
