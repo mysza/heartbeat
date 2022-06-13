@@ -64,6 +64,22 @@ In general, the files and modules are organized in a way that there's a clear de
 
 This makes it clear what is the responsibility of each of the modules, and reduces coupling between modules.
 
+### Testing
+
+Unit testing are only testing the business logic, mocking the repositories.
+To run unit tests, run
+
+```bash
+npm run test:unit
+```
+
+e2e testing are starting the database and the application as Docker containers, and execute HTTP requests to the application endpoints.
+To run e2e tests, run
+
+```bash
+npm run test:e2e # this automatically starts docker-compose with app and mongo
+```
+
 ### Notable decisions
 
 1. Not modeling groups as separate entities
