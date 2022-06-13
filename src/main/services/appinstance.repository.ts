@@ -19,4 +19,5 @@ export abstract class ApplicationInstanceRepository {
   ): Promise<Instance | null>;
   public abstract getAllGroups(): Promise<GroupSummary[]>;
   public abstract getAllInstances(group: string): Promise<Instance[] | null>;
+  public abstract deleteOlderThan(date: Date): Promise<void>;
 }

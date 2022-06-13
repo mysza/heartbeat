@@ -142,4 +142,21 @@ export class HeartbeatRouter extends Router {
     }
     return groupInstances;
   }
+
+  @Post({
+    path: "/cleanup",
+    responses: {
+      204: {
+        description: "Cleanup completed",
+      },
+      500: {
+        description: "Internal server error",
+        contentType: "application/json",
+      },
+    },
+  })
+  async cleanup() {
+    await this.heartbeatService.sweep();
+    this.ctx.status = 204;
+  }
 }

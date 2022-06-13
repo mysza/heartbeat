@@ -109,4 +109,12 @@ export class MongoApplicationInstanceRepository extends ApplicationInstanceRepos
     const instances = await instancesCollection.find({ group }).toArray();
     return instances.map((instance) => this.mapDbInstanceToInstance(instance));
   }
+
+  public async deleteOlderThan(date: Date): Promise<void> {
+    const instancesCollection = this.getInstancesCollection();
+    const { deletedCount } = await instancesCollection.deleteMany({
+      updatedAt: { $lt: date },
+    });
+    this.logger.info(`deleted instances in a sweep`, { deletedCount });
+  }
 }

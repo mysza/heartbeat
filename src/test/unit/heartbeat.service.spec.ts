@@ -1,4 +1,4 @@
-import { ConsoleLogger } from "@ubio/framework";
+import { Config, ConsoleLogger, DefaultConfig } from "@ubio/framework";
 import { Instance } from "../../main/schema/instance.model";
 import { RegistrationRequest } from "../../main/services/dto/registrationRequest.dto";
 import { UnregistrationRequest } from "../../main/services/dto/unregistrationRequest.dto";
@@ -12,6 +12,7 @@ const baseMockRepo: ApplicationInstanceRepository = {
   saveInstance: jest.fn(),
   deleteInstance: jest.fn(),
   getAllInstances: jest.fn(),
+  deleteOlderThan: jest.fn(),
 };
 
 describe("heartbeat.service", () => {
@@ -35,7 +36,11 @@ describe("heartbeat.service", () => {
       );
 
       const req: RegistrationRequest = new RegistrationRequest(id, group, meta);
-      const service = new HeartbeatService(new ConsoleLogger(), repoMock);
+      const service = new HeartbeatService(
+        new ConsoleLogger(),
+        repoMock,
+        new DefaultConfig()
+      );
       const registered = await service.register(req);
 
       expect(repoMock.getInstance).toHaveBeenCalledTimes(1);
@@ -85,7 +90,11 @@ describe("heartbeat.service", () => {
       );
 
       const req: RegistrationRequest = new RegistrationRequest(id, group, meta);
-      const service = new HeartbeatService(new ConsoleLogger(), repoMock);
+      const service = new HeartbeatService(
+        new ConsoleLogger(),
+        repoMock,
+        new DefaultConfig()
+      );
       const registered = await service.register(req);
 
       expect(repoMock.getInstance).toHaveBeenCalledTimes(1);
@@ -111,7 +120,11 @@ describe("heartbeat.service", () => {
       );
 
       const req = new UnregistrationRequest(existingApp.id, existingApp.group);
-      const service = new HeartbeatService(new ConsoleLogger(), repoMock);
+      const service = new HeartbeatService(
+        new ConsoleLogger(),
+        repoMock,
+        new DefaultConfig()
+      );
       const unregistered = await service.unregister(req);
 
       expect(repoMock.deleteInstance).toHaveBeenCalledTimes(1);
@@ -130,7 +143,11 @@ describe("heartbeat.service", () => {
       );
 
       const req = new UnregistrationRequest("test-app-id", "test-group-id");
-      const service = new HeartbeatService(new ConsoleLogger(), repoMock);
+      const service = new HeartbeatService(
+        new ConsoleLogger(),
+        repoMock,
+        new DefaultConfig()
+      );
 
       const unregistered = await service.unregister(req);
 
@@ -153,7 +170,11 @@ describe("heartbeat.service", () => {
           getAllGroups: jest.fn().mockResolvedValue(groupSummaries),
         }
       );
-      const service = new HeartbeatService(new ConsoleLogger(), repoMock);
+      const service = new HeartbeatService(
+        new ConsoleLogger(),
+        repoMock,
+        new DefaultConfig()
+      );
       const groups = await service.getAllGroups();
 
       expect(repoMock.getAllGroups).toHaveBeenCalledTimes(1);
@@ -189,7 +210,11 @@ describe("heartbeat.service", () => {
             ]),
         }
       );
-      const service = new HeartbeatService(new ConsoleLogger(), repoMock);
+      const service = new HeartbeatService(
+        new ConsoleLogger(),
+        repoMock,
+        new DefaultConfig()
+      );
 
       const response = await service.getAllInstances(groupName);
 

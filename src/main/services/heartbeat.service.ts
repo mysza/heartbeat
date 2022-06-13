@@ -1,5 +1,5 @@
 import { inject, injectable } from "inversify";
-import { Logger } from "@ubio/framework";
+import { Logger, config, Config } from "@ubio/framework";
 import { Instance } from "../schema/instance.model";
 import { ApplicationInstanceRepository } from "./appinstance.repository";
 import { RegistrationRequest } from "./dto/registrationRequest.dto";
@@ -12,11 +12,14 @@ import {
 
 @injectable()
 export class HeartbeatService {
+  @config({ default: 5 }) MAX_AGE_SECONDS!: number;
+
   constructor(
     @inject(Logger)
     private logger: Logger,
     @inject(ApplicationInstanceRepository)
-    private appInstanceRepo: ApplicationInstanceRepository
+    private appInstanceRepo: ApplicationInstanceRepository,
+    @inject(Config) public config: Config
   ) {}
 
   public async register(req: RegistrationRequest): Promise<InstanceResponse> {
@@ -64,5 +67,13 @@ export class HeartbeatService {
       return groupInstances.map((instance) => createInstanceResponse(instance));
     }
     return null;
+  }
+
+  public async sweep(): Promise<void> {
+    this.logger.info(`sweeping instances`, {
+      maxAgeSeconds: this.MAX_AGE_SECONDS,
+    });
+    const maxUpdatedAt = new Date(Date.now() - this.MAX_AGE_SECONDS * 1000);
+    await this.appInstanceRepo.deleteOlderThan(maxUpdatedAt);
   }
 }
