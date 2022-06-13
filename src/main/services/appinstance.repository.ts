@@ -1,5 +1,7 @@
-import { injectable } from "inversify";
-import { Instance } from "../schema/instance.model";
+import { Logger } from "@ubio/framework";
+import { inject, injectable } from "inversify";
+import { GroupSummary } from "../schema/models/groupSummary.model";
+import { Instance } from "../schema/models/instance.model";
 
 /**
  * Defining the ApplicationRepository interface here, to keep the definition
@@ -7,8 +9,15 @@ import { Instance } from "../schema/instance.model";
  */
 @injectable()
 export abstract class ApplicationInstanceRepository {
-  public abstract save(application: Instance): Promise<Instance>;
-  public abstract get(id: string, group: string): Promise<Instance | null>;
-  public abstract delete(id: string, group: string): Promise<Instance | null>;
-  public abstract getAll(): Promise<Instance[]>;
+  public abstract saveInstance(instance: Instance): Promise<Instance>;
+  public abstract getInstance(
+    group: string,
+    id: string
+  ): Promise<Instance | null>;
+  public abstract deleteInstance(
+    group: string,
+    id: string
+  ): Promise<Instance | null>;
+  public abstract getAllGroups(): Promise<GroupSummary[]>;
+  public abstract getAllInstances(group: string): Promise<Instance[]>;
 }

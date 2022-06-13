@@ -1,6 +1,6 @@
 import { Application } from "@ubio/framework";
 import { MemoryApplicationInstanceRepository } from "./repos/appinstance.memory.repo";
-import { HeartbeatRouter } from "./routes/heartbeat.route";
+import { HeartbeatRouter } from "./http/heartbeat.route";
 import { ApplicationInstanceRepository } from "./services/appinstance.repository";
 import { HeartbeatService } from "./services/heartbeat.service";
 

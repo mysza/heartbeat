@@ -1,16 +1,18 @@
 import { inject, injectable } from "inversify";
 import { Logger } from "@ubio/framework";
-import { RegistrationResponse } from "../schema/registrationResponse.dto";
 import { ApplicationInstanceRepository } from "./appinstance.repository";
-import { RegistrationRequest } from "../schema/registrationRequest.dto";
-import { Instance } from "../schema/instance.model";
-import { UnregistrationRequest } from "../schema/unregistrationRequest.dto";
-import { UnregistrationResponse } from "../schema/unregistrationResponse.dto";
+import { RegistrationRequest } from "../schema/dto/registrationRequest.dto";
+import { Instance } from "../schema/models/instance.model";
+import { UnregistrationRequest } from "../schema/dto/unregistrationRequest.dto";
 import { ApplicationNotFoundError } from "./applicationNotFound.error";
 import {
   createGroupResponse,
   GroupResponse,
-} from "../schema/groupResponse.dto";
+} from "../schema/dto/groupResponse.dto";
+import {
+  createInstanceResponse,
+  InstanceResponse,
+} from "../schema/dto/instanceResponse.dto";
 
 @injectable()
 export class HeartbeatService {
@@ -21,77 +23,53 @@ export class HeartbeatService {
     private appInstanceRepo: ApplicationInstanceRepository
   ) {}
 
-  public async register(
-    req: RegistrationRequest
-  ): Promise<RegistrationResponse> {
+  public async register(req: RegistrationRequest): Promise<InstanceResponse> {
     this.logger.info(`registering application`, {
-      id: req.id,
-      group: req.group,
+      id: req.applicationId,
+      group: req.groupId,
     });
-    const { id, group, meta } = req;
-    const existingApp = await this.appInstanceRepo.get(id, group);
-    if (existingApp !== null) {
-      const updated = { ...existingApp, updatedAt: Date.now(), meta };
-      this.logger.info(`updating heartbeat`, updated);
-      return await this.appInstanceRepo.save(updated);
-    }
-    const newApp = Instance.create({
-      id,
-      group,
-      meta,
-    });
-    const added = await this.appInstanceRepo.save(newApp);
-    this.logger.info("new instance added", added);
-    return added;
+    const { applicationId, groupId, meta } = req;
+    const instance =
+      (await this.appInstanceRepo.getInstance(applicationId, groupId)) ??
+      new Instance(applicationId, groupId, meta);
+    const added = await this.appInstanceRepo.saveInstance(
+      instance.update(meta)
+    );
+    return createInstanceResponse(added);
   }
 
   public async unregister(
     req: UnregistrationRequest
-  ): Promise<UnregistrationResponse> {
-    const { id, group } = req;
-    this.logger.info(`unregistering application`, { id, group });
-    const unregistered = await this.appInstanceRepo.delete(id, group);
+  ): Promise<InstanceResponse> {
+    const { applicationId, groupId } = req;
+    this.logger.info(`unregistering application`, {
+      id: applicationId,
+      group: groupId,
+    });
+    const unregistered = await this.appInstanceRepo.deleteInstance(
+      groupId,
+      applicationId
+    );
     if (unregistered === null) {
-      this.logger.info(`application to unregister not found`, { id, group });
-      throw new ApplicationNotFoundError(id, group);
+      this.logger.info(`application to unregister not found`, {
+        id: applicationId,
+        group: groupId,
+      });
+      throw new ApplicationNotFoundError(applicationId, groupId);
     }
     this.logger.info(`unregistered instance`, unregistered);
-    return unregistered;
+    return createInstanceResponse(unregistered);
   }
 
   public async getAllGroups(): Promise<GroupResponse[]> {
     this.logger.info(`getting groups summary`);
-    const instances = await this.appInstanceRepo.getAll();
-    const response = instances.reduce((groups, instance) => {
-      const group = instance.group;
-      const currentGroup = getElementOrCreate(groups, group, () =>
-        createGroupResponse(group, 0, instance.createdAt, instance.updatedAt)
-      );
-      const updatedGroup = addInstanceToGroupResponse(currentGroup, instance);
-      return { ...groups, [group]: updatedGroup };
-    }, {} as { [key: string]: GroupResponse });
-    this.logger.info(`got groups summary`, response);
-    return Object.values(response);
+    const groupSummaries = await this.appInstanceRepo.getAllGroups();
+    return groupSummaries.map((group) => createGroupResponse(group));
+  }
+
+  public async getAllInstances(group: string): Promise<InstanceResponse[]> {
+    this.logger.info(`getting all instances`);
+    const groupInstances = await this.appInstanceRepo.getAllInstances(group);
+    return groupInstances.map((instance) => createInstanceResponse(instance));
   }
 }
-
-const getElementOrCreate = <T>(
-  dict: { [key: string]: T },
-  key: string,
-  newElementConstructor: () => T
-): T => {
-  if (dict[key] !== undefined) {
-    return dict[key];
-  }
-  return newElementConstructor();
-};
-
-const addInstanceToGroupResponse = (
-  group: GroupResponse,
-  instance: Instance
-): GroupResponse => {
-  group.instances++;
-  group.createdAt = Math.min(group.createdAt, instance.createdAt);
-  group.lastUpdatedAt = Math.max(group.lastUpdatedAt, instance.updatedAt);
-  return group;
-};
