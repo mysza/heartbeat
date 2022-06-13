@@ -176,10 +176,10 @@ describe("heartbeat.service", () => {
 
     it("should get all group instances for existing group", async () => {
       const group = new Group("test-group-id-1");
-      group.addInstance(
+      group.addOrUpdateInstance(
         new Instance("test-app-id-1", "test-group-id-1", { test: "test" })
       );
-      group.addInstance(
+      group.addOrUpdateInstance(
         new Instance("test-app-id-2", "test-group-id-1", { test: "test" })
       );
       const repoMock: ApplicationInstanceRepository = Object.assign(

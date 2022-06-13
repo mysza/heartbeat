@@ -13,10 +13,14 @@ export class Group {
   // can only construct a new group with an instance
   constructor(private _name: string) {}
 
-  public addInstance(instance: Instance): Instance {
-    this._instances[instance.id] = instance;
+  public addOrUpdateInstance(instance: Instance): Instance {
+    if (this._instances[instance.id]) {
+      this._instances[instance.id].update(instance.meta);
+    } else {
+      this._instances[instance.id] = instance;
+    }
     this._lastUpdatedAt = new Date();
-    return instance;
+    return this._instances[instance.id];
   }
 
   public getInstance(id: string): Instance | null {
@@ -73,9 +77,9 @@ export class MemoryApplicationInstanceRepository extends ApplicationInstanceRepo
     this.logger.info("saving instance", { instance: application });
     const group =
       this.groups[application.group] ?? new Group(application.group);
-    group.addInstance(application);
+    const instance = group.addOrUpdateInstance(application);
     this.groups[application.group] = group;
-    return application;
+    return instance;
   }
 
   public async getInstance(
