@@ -28,6 +28,7 @@ describe("heartbeat service", () => {
       expect(res.data.createdAt).toBeGreaterThan(0);
       expect(res.data.updatedAt).toBeGreaterThan(0);
     });
+
     it("should update already registered application", async () => {
       const id = uuid();
       const group = uuid();

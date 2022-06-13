@@ -1,5 +1,6 @@
 import dockerCompose from "docker-compose";
 
 export default async () => {
-  await dockerCompose.down({});
+  await dockerCompose.stop();
+  await dockerCompose.down();
 };
