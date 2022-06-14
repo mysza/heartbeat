@@ -135,6 +135,7 @@ export class HeartbeatRouter extends Router {
     @PathParam("group", { schema: GroupIdJsonSchema })
     group: string
   ) {
+    this.logger.addContextData({ group });
     const groupInstances = await this.heartbeatService.getAllInstances(group);
     if (!groupInstances) {
       this.ctx.status = 404;
